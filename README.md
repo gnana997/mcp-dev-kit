@@ -4,24 +4,21 @@
 [![CI](https://github.com/gnana997/mcp-dev-kit/actions/workflows/ci.yml/badge.svg)](https://github.com/gnana997/mcp-dev-kit/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-**Complete testing & debugging toolkit for MCP (Model Context Protocol) servers**
+**Debug logger for MCP (Model Context Protocol) servers**
 
 ## Why mcp-dev-kit?
 
-Developing MCP servers is hard because:
+The biggest pain point when developing MCP servers:
 - ❌ `console.log()` breaks stdio communication
-- ❌ Manual testing with MCP Inspector is slow
-- ❌ No automated unit testing solution
-- ❌ Rebuilding servers kills your flow
+- ❌ Can't debug your MCP server normally
+- ❌ JSON-RPC gets corrupted by stdout writes
 
-**mcp-dev-kit solves all of these problems.**
+**mcp-dev-kit solves this.**
 
 ## Features
 
 ✨ **Smart Debug Logger** - Use `console.log()` without breaking JSON-RPC
-🧪 **Test Client** - Write unit tests for MCP servers
-🔥 **Hot Reload** - Auto-restart server on file changes
-✅ **Test Matchers** - Custom assertions for MCP responses
+Automatically patches console methods to write to stderr instead of stdout
 
 ## Quick Start
 
@@ -38,33 +35,17 @@ import 'mcp-dev-kit/logger';
 console.log('Server started', { port: 3000 });
 ```
 
-### Unit Testing
+### Manual Control
 
 ```typescript
-import { MCPTestClient } from 'mcp-dev-kit';
+import { createLogger } from 'mcp-dev-kit';
 
-const client = new MCPTestClient({
-  command: 'node',
-  args: ['./build/server.js']
+const logger = createLogger({
+  timestamps: true,
+  level: 'info'
 });
 
-await client.connect();
-
-const result = await client.callTool('calculate', {
-  operation: 'add',
-  a: 5,
-  b: 3
-});
-
-expect(result.content[0].text).toBe('8');
-```
-
-### Hot Reload Development
-
-```bash
-npx mcp-dev-kit dev ./src/server.ts
-
-# Server auto-restarts on file changes
+logger.info('Server ready');
 ```
 
 ## Installation

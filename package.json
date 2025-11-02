@@ -36,32 +36,9 @@
       "types": "./dist/logger/index.d.ts",
       "import": "./dist/logger/index.js",
       "require": "./dist/logger/index.cjs"
-    },
-    "./client": {
-      "types": "./dist/client/index.d.ts",
-      "import": "./dist/client/index.js",
-      "require": "./dist/client/index.cjs"
-    },
-    "./dev-server": {
-      "types": "./dist/dev-server/index.d.ts",
-      "import": "./dist/dev-server/index.js",
-      "require": "./dist/dev-server/index.cjs"
-    },
-    "./matchers": {
-      "types": "./dist/matchers/index.d.ts",
-      "import": "./dist/matchers/index.js",
-      "require": "./dist/matchers/index.cjs"
     }
   },
-  "bin": {
-    "mcp-dev-kit": "./dist/cli/index.js"
-  },
-  "files": [
-    "dist",
-    "README.md",
-    "LICENSE",
-    "CHANGELOG.md"
-  ],
+  "files": ["dist", "README.md", "LICENSE", "CHANGELOG.md"],
   "sideEffects": false,
   "scripts": {
     "build": "tsup",
@@ -82,13 +59,7 @@
     "validate": "npm run lint && npm run typecheck && npm test && npx publint"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.0.0",
-    "chalk": "^5.3.0",
-    "chokidar": "^3.6.0",
-    "node-stdio-jsonrpc": "^0.1.0",
-    "ora": "^8.0.0",
-    "tsx": "^4.19.0",
-    "zod": "^3.23.0"
+    "chalk": "^5.3.0"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",

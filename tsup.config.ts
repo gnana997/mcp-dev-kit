@@ -4,10 +4,6 @@ export default defineConfig({
   entry: {
     index: 'src/index.ts',
     'logger/index': 'src/logger/index.ts',
-    'client/index': 'src/client/index.ts',
-    'dev-server/index': 'src/dev-server/index.ts',
-    'matchers/index': 'src/matchers/index.ts',
-    'cli/index': 'src/cli/index.ts',
   },
   format: ['esm', 'cjs'],
   dts: true,
