@@ -172,18 +172,11 @@ mcp-dev-kit/
 ├── src/
 │   ├── logger/        # Debug logger implementation
 │   ├── client/        # MCPTestClient implementation
-│   ├── dev-server/    # Hot reload development server
-│   ├── matchers/      # Vitest/Jest test matchers
-│   ├── cli/           # CLI entry point
 │   └── index.ts       # Main entry point
 ├── tests/             # Test files
 ├── examples/          # Usage examples
 └── docs/              # Additional documentation
 ```
-
-## Implementation Plan
-
-See [MCP_DEV_KIT_PLAN.md](./MCP_DEV_KIT_PLAN.md) for the detailed implementation roadmap and feature priorities.
 
 ## Reporting Issues
 
