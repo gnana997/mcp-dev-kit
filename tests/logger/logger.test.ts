@@ -9,6 +9,8 @@ import { Writable } from 'node:stream';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { createLogger, patchConsole, unpatchConsole } from '../../src/logger/index.js';
 
+const ANSI_ESCAPE_PATTERN = new RegExp(`${String.fromCharCode(27)}\\[\\d+m`);
+
 /**
  * Helper to capture stream output
  */
@@ -107,7 +109,7 @@ describe('Debug Logger', () => {
 
       const output = stream.getOutput();
       // ANSI color codes should be present
-      expect(output).toMatch(/\x1b\[\d+m/); // Contains ANSI escape codes
+      expect(output).toMatch(ANSI_ESCAPE_PATTERN); // Contains ANSI escape codes
     });
 
     it('should not use colors when colors are disabled', () => {
@@ -118,7 +120,7 @@ describe('Debug Logger', () => {
 
       const output = stream.getOutput();
       // Should not contain ANSI color codes
-      expect(output).not.toMatch(/\x1b\[\d+m/);
+      expect(output).not.toMatch(ANSI_ESCAPE_PATTERN);
     });
 
     it('should respect log level filtering', () => {
