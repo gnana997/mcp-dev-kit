@@ -20,7 +20,7 @@ async function createClient(): Promise<{
 	client: StdioClient;
 }> {
 	const serverPath = join(
-		fileURLToPath(new URL('.', import.meta.url)),
+		fileURLToPath(new URL('..', import.meta.url)),
 		'fixtures',
 		'test-jsonrpc-server.js'
 	);

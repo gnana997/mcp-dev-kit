@@ -179,7 +179,7 @@ const activeHarnesses: MCPServerTestHarness[] = [];
 
 function createTestHarness(): MCPServerTestHarness {
 	const serverPath = join(
-		fileURLToPath(new URL('.', import.meta.url)),
+		fileURLToPath(new URL('..', import.meta.url)),
 		'fixtures',
 		'test-mcp-server.js'
 	);

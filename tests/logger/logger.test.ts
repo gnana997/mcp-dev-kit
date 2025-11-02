@@ -7,7 +7,7 @@ process.env.MCP_DEV_KIT_NO_AUTO_PATCH = 'true';
 
 import { Writable } from 'node:stream';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { createLogger, patchConsole, unpatchConsole } from '../src/logger/index.js';
+import { createLogger, patchConsole, unpatchConsole } from '../../src/logger/index.js';
 
 /**
  * Helper to capture stream output
