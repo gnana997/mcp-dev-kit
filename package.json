@@ -1,0 +1,112 @@
+{
+  "name": "mcp-dev-kit",
+  "version": "0.1.0",
+  "description": "Complete testing & debugging toolkit for MCP (Model Context Protocol) servers",
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "testing",
+    "debugging",
+    "devtools",
+    "stdio",
+    "json-rpc",
+    "typescript"
+  ],
+  "author": "gnana997",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gnana997/mcp-dev-kit.git"
+  },
+  "bugs": {
+    "url": "https://github.com/gnana997/mcp-dev-kit/issues"
+  },
+  "homepage": "https://github.com/gnana997/mcp-dev-kit#readme",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./logger": {
+      "types": "./dist/logger/index.d.ts",
+      "import": "./dist/logger/index.js",
+      "require": "./dist/logger/index.cjs"
+    },
+    "./client": {
+      "types": "./dist/client/index.d.ts",
+      "import": "./dist/client/index.js",
+      "require": "./dist/client/index.cjs"
+    },
+    "./dev-server": {
+      "types": "./dist/dev-server/index.d.ts",
+      "import": "./dist/dev-server/index.js",
+      "require": "./dist/dev-server/index.cjs"
+    },
+    "./matchers": {
+      "types": "./dist/matchers/index.d.ts",
+      "import": "./dist/matchers/index.js",
+      "require": "./dist/matchers/index.cjs"
+    }
+  },
+  "bin": {
+    "mcp-dev-kit": "./dist/cli/index.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest run --coverage",
+    "lint": "biome check .",
+    "lint:fix": "biome check --write .",
+    "format": "biome format --write .",
+    "typecheck": "tsc --noEmit",
+    "clean": "rimraf dist coverage",
+    "prepublishOnly": "npm run clean && npm run build && npm run test",
+    "changeset": "changeset",
+    "version": "changeset version",
+    "release": "changeset publish",
+    "validate": "npm run lint && npm run typecheck && npm test && npx publint"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "chalk": "^5.3.0",
+    "chokidar": "^3.6.0",
+    "node-stdio-jsonrpc": "^0.1.0",
+    "ora": "^8.0.0",
+    "tsx": "^4.19.0",
+    "zod": "^3.23.0"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.9.4",
+    "@changesets/cli": "^2.27.0",
+    "@types/node": "^22.10.0",
+    "@vitest/coverage-v8": "^4.0.6",
+    "@vitest/ui": "^4.0.6",
+    "rimraf": "^6.0.0",
+    "tsup": "^8.3.0",
+    "typescript": "^5.7.0",
+    "vitest": "^4.0.6"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  }
+}
