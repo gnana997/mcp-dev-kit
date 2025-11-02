@@ -4,7 +4,7 @@
  * Log to both console (stderr) and a file.
  */
 
-import { createLogger } from 'mcp-dev-kit';
+import { createLogger } from '../../src/index.js';
 
 // Create logger with file output
 const logger = createLogger({

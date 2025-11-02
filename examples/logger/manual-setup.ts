@@ -4,7 +4,7 @@
  * Create a logger with custom configuration.
  */
 
-import { createLogger } from 'mcp-dev-kit';
+import { createLogger } from '../../src/index.js';
 
 // Create a custom logger with specific options
 const logger = createLogger({
