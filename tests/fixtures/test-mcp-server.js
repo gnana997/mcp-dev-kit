@@ -10,7 +10,14 @@ import '../../dist/logger/index.js';
 
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
-import { CallToolRequestSchema, ListToolsRequestSchema } from '@modelcontextprotocol/sdk/types.js';
+import {
+  CallToolRequestSchema,
+  ListToolsRequestSchema,
+  ListResourcesRequestSchema,
+  ReadResourceRequestSchema,
+  ListPromptsRequestSchema,
+  GetPromptRequestSchema,
+} from '@modelcontextprotocol/sdk/types.js';
 
 // Create MCP server
 const server = new Server(
@@ -21,6 +28,8 @@ const server = new Server(
   {
     capabilities: {
       tools: {},
+      resources: {},
+      prompts: {},
     },
   }
 );
@@ -98,6 +107,140 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     default:
       throw new Error(`Unknown tool: ${name}`);
   }
+});
+
+// Register resource handlers
+server.setRequestHandler(ListResourcesRequestSchema, async () => {
+  console.log('Handling resources/list request');
+  console.info('Server has 2 resources available');
+
+  return {
+    resources: [
+      {
+        uri: 'config://app.json',
+        name: 'Application Config',
+        description: 'Application configuration file',
+        mimeType: 'application/json',
+      },
+      {
+        uri: 'file://readme.md',
+        name: 'README',
+        description: 'Project documentation',
+        mimeType: 'text/markdown',
+      },
+    ],
+  };
+});
+
+server.setRequestHandler(ReadResourceRequestSchema, async (request) => {
+  const { uri } = request.params;
+
+  console.log(`Reading resource: ${uri}`);
+
+  if (uri === 'config://app.json') {
+    return {
+      contents: [
+        {
+          uri: 'config://app.json',
+          mimeType: 'application/json',
+          text: JSON.stringify({ name: 'test-app', version: '1.0.0', debug: true }),
+        },
+      ],
+    };
+  }
+
+  if (uri === 'file://readme.md') {
+    return {
+      contents: [
+        {
+          uri: 'file://readme.md',
+          mimeType: 'text/markdown',
+          text: '# Test Project\n\nThis is a test MCP server.',
+        },
+      ],
+    };
+  }
+
+  throw new Error(`Resource not found: ${uri}`);
+});
+
+// Register prompt handlers
+server.setRequestHandler(ListPromptsRequestSchema, async () => {
+  console.log('Handling prompts/list request');
+  console.info('Server has 2 prompts available');
+
+  return {
+    prompts: [
+      {
+        name: 'greeting',
+        description: 'A friendly greeting prompt',
+      },
+      {
+        name: 'code-review',
+        description: 'Code review prompt with file argument',
+        arguments: [
+          {
+            name: 'file',
+            description: 'File to review',
+            required: true,
+          },
+          {
+            name: 'language',
+            description: 'Programming language',
+            required: false,
+          },
+        ],
+      },
+    ],
+  };
+});
+
+server.setRequestHandler(GetPromptRequestSchema, async (request) => {
+  const { name, arguments: args = {} } = request.params;
+
+  console.log(`Getting prompt: ${name}`);
+  console.debug('Prompt arguments:', args);
+
+  if (name === 'greeting') {
+    return {
+      messages: [
+        {
+          role: 'user',
+          content: {
+            type: 'text',
+            text: 'Hello! How can I help you today?',
+          },
+        },
+        {
+          role: 'assistant',
+          content: {
+            type: 'text',
+            text: 'I am ready to assist you with any questions or tasks you have.',
+          },
+        },
+      ],
+    };
+  }
+
+  if (name === 'code-review') {
+    const file = args.file || 'unknown.js';
+    const language = args.language || 'javascript';
+
+    return {
+      description: `Code review for ${file}`,
+      messages: [
+        {
+          role: 'user',
+          content: {
+            type: 'text',
+            text: `Please review this ${language} file: ${file}`,
+          },
+        },
+      ],
+    };
+  }
+
+  throw new Error(`Unknown prompt: ${name}`);
 });
 
 // Handle errors

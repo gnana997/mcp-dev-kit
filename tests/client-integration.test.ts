@@ -186,6 +186,90 @@ describe('MCPTestClient Integration Tests', () => {
 		});
 	});
 
+	describe('Resources - listResources()', () => {
+		it('should list available resources', async () => {
+			const resources = await client.listResources();
+			expect(resources).toHaveLength(2);
+			expect(resources.map((r) => r.uri)).toEqual(['config://app.json', 'file://readme.md']);
+		});
+
+		it('should return resources with metadata', async () => {
+			const resources = await client.listResources();
+			expect(resources[0]?.name).toBe('Application Config');
+			expect(resources[0]?.description).toBe('Application configuration file');
+			expect(resources[0]?.mimeType).toBe('application/json');
+		});
+	});
+
+	describe('Resources - readResource()', () => {
+		it('should read JSON resource', async () => {
+			const result = await client.readResource('config://app.json');
+			expect(result.contents).toHaveLength(1);
+			expect(result.contents[0]?.mimeType).toBe('application/json');
+			expect(result.contents[0]?.text).toContain('test-app');
+		});
+
+		it('should read text resource', async () => {
+			const result = await client.readResource('file://readme.md');
+			expect(result.contents).toHaveLength(1);
+			expect(result.contents[0]?.mimeType).toBe('text/markdown');
+			expect(result.contents[0]?.text).toContain('# Test Project');
+		});
+
+		it('should throw error for non-existent resource', async () => {
+			await expect(client.readResource('file://missing.txt')).rejects.toThrow();
+		});
+	});
+
+	describe('Prompts - listPrompts()', () => {
+		it('should list available prompts', async () => {
+			const prompts = await client.listPrompts();
+			expect(prompts).toHaveLength(2);
+			expect(prompts.map((p) => p.name)).toEqual(['greeting', 'code-review']);
+		});
+
+		it('should return prompts with descriptions', async () => {
+			const prompts = await client.listPrompts();
+			expect(prompts[0]?.description).toBe('A friendly greeting prompt');
+			expect(prompts[1]?.description).toBe('Code review prompt with file argument');
+		});
+
+		it('should return prompts with arguments', async () => {
+			const prompts = await client.listPrompts();
+			expect(prompts[1]?.arguments).toHaveLength(2);
+			expect(prompts[1]?.arguments?.[0]?.name).toBe('file');
+			expect(prompts[1]?.arguments?.[0]?.required).toBe(true);
+		});
+	});
+
+	describe('Prompts - getPrompt()', () => {
+		it('should get simple prompt without arguments', async () => {
+			const result = await client.getPrompt('greeting');
+			expect(result.messages).toHaveLength(2);
+			expect(result.messages[0]?.role).toBe('user');
+			expect(result.messages[1]?.role).toBe('assistant');
+		});
+
+		it('should get prompt with arguments', async () => {
+			const result = await client.getPrompt('code-review', {
+				file: 'app.ts',
+				language: 'typescript',
+			});
+			expect(result.description).toBe('Code review for app.ts');
+			expect(result.messages[0]?.content.text).toContain('typescript');
+			expect(result.messages[0]?.content.text).toContain('app.ts');
+		});
+
+		it('should get prompt with default argument values', async () => {
+			const result = await client.getPrompt('code-review', { file: 'test.js' });
+			expect(result.messages[0]?.content.text).toContain('javascript');
+		});
+
+		it('should throw error for unknown prompt', async () => {
+			await expect(client.getPrompt('unknown')).rejects.toThrow();
+		});
+	});
+
 	describe('Coverage Configuration', () => {
 		it('should propagate coverage env by default', () => {
 			const originalEnv = process.env.NODE_V8_COVERAGE;
