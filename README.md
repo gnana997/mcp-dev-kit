@@ -244,14 +244,40 @@ describe('My MCP Server', () => {
 
 ### Custom Vitest Matchers
 
-Make your tests more readable with MCP-specific matchers:
+Make your tests more readable with MCP-specific matchers.
+
+#### Setup
+
+Create a `vitest.setup.ts` file in your project root:
 
 ```typescript
 import { installMCPMatchers } from 'mcp-dev-kit/matchers';
-import { expect } from 'vitest';
 
-// Install matchers once (e.g., in vitest.setup.ts)
+// Install matchers globally for all tests
 installMCPMatchers();
+```
+
+Then configure Vitest to use it in `vitest.config.ts`:
+
+```typescript
+import { defineConfig } from 'vitest/config';
+
+export default defineConfig({
+  test: {
+    globals: true,
+    environment: 'node',
+    setupFiles: ['./vitest.setup.ts'],
+  },
+});
+```
+
+#### Usage
+
+Now you can use the matchers in your tests:
+
+```typescript
+import { MCPTestClient } from 'mcp-dev-kit/client';
+import { expect } from 'vitest';
 
 describe('My MCP Server', () => {
   // Check if server has specific tools
@@ -283,6 +309,94 @@ describe('My MCP Server', () => {
 - `toThrowToolError()` - Assert tool call throws error
 - `toHaveToolProperty(property, value?)` - Assert tool has property
 - `toMatchToolSchema(schema)` - Assert tool input schema matches
+
+## Complete Testing Setup
+
+This guide walks you through setting up a complete test environment for your MCP server.
+
+### 1. Install mcp-dev-kit
+
+```bash
+npm install --save-dev mcp-dev-kit vitest
+```
+
+### 2. Create Test Setup File
+
+Create `vitest.setup.ts` in your project root:
+
+```typescript
+import { installMCPMatchers } from 'mcp-dev-kit/matchers';
+
+// Install custom matchers globally
+installMCPMatchers();
+```
+
+### 3. Configure Vitest
+
+Create or update `vitest.config.ts`:
+
+```typescript
+import { defineConfig } from 'vitest/config';
+
+export default defineConfig({
+  test: {
+    globals: true,
+    environment: 'node',
+    setupFiles: ['./vitest.setup.ts'],
+  },
+});
+```
+
+### 4. Write Your First Test
+
+Create `server.test.ts`:
+
+```typescript
+import { describe, it, expect, beforeAll, afterAll } from 'vitest';
+import { MCPTestClient } from 'mcp-dev-kit/client';
+
+describe('My MCP Server', () => {
+  let client: MCPTestClient;
+
+  beforeAll(async () => {
+    client = new MCPTestClient({
+      command: 'node',
+      args: ['./my-server.js'],
+    });
+    await client.connect();
+  });
+
+  afterAll(async () => {
+    await client.disconnect();
+  });
+
+  it('should have required tools', async () => {
+    await expect(client).toHaveTool('my-tool');
+  });
+
+  it('should execute tool successfully', async () => {
+    const result = await client.expectToolCallSuccess('my-tool', {
+      input: 'test',
+    });
+    expect(result).toBe('expected output');
+  });
+
+  it('should handle errors correctly', async () => {
+    const error = await client.expectToolCallError('my-tool', {
+      invalid: 'params',
+    });
+    expect(error.message).toContain('expected error message');
+  });
+});
+```
+
+### 5. Run Tests
+
+```bash
+npx vitest
+```
+
+That's it! You now have a complete testing setup for your MCP server with custom matchers, test helpers, and clean assertions.
 
 ## Examples
 

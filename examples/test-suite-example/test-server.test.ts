@@ -46,18 +46,14 @@ describe('MCP Server Test Suite Example', () => {
       });
 
       it('should fail when tool does not exist', async () => {
-        await expect(
-          expect(client).toHaveTool('nonexistent')
-        ).rejects.toThrow();
+        await expect(expect(client).toHaveTool('nonexistent')).rejects.toThrow();
       });
     });
 
     describe('toReturnToolResult matcher', () => {
       it('should assert tool returns expected result', async () => {
         // Clean, readable test assertions
-        await expect(
-          client.callTool('echo', { message: 'hello' })
-        ).toReturnToolResult('hello');
+        await expect(client.callTool('echo', { message: 'hello' })).toReturnToolResult('hello');
 
         await expect(
           client.callTool('calculate', { operation: 'add', a: 5, b: 3 })
@@ -72,16 +68,14 @@ describe('MCP Server Test Suite Example', () => {
           client.callTool('calculate', { operation: 'divide', a: 10, b: 0 })
         ).toThrowToolError();
 
-        await expect(
-          client.callTool('echo', { message: '' })
-        ).toThrowToolError();
+        await expect(client.callTool('echo', { message: '' })).toThrowToolError();
       });
     });
 
     describe('toMatchToolSchema matcher', () => {
       it('should validate tool input schema', async () => {
         const tools = await client.listTools();
-        const echoTool = tools.find(t => t.name === 'echo');
+        const echoTool = tools.find((t) => t.name === 'echo');
 
         // Validate tool schemas with ease
         expect(echoTool).toMatchToolSchema({
@@ -98,7 +92,7 @@ describe('MCP Server Test Suite Example', () => {
 
       it('should validate calculate tool schema', async () => {
         const tools = await client.listTools();
-        const calcTool = tools.find(t => t.name === 'calculate');
+        const calcTool = tools.find((t) => t.name === 'calculate');
 
         expect(calcTool).toMatchToolSchema({
           type: 'object',
@@ -164,7 +158,7 @@ describe('MCP Server Test Suite Example', () => {
     it('should fail without message parameter', async () => {
       const error = await client.expectToolCallError('echo', {});
       expect(error).toBeDefined();
-      expect(error).toContain('Message is required');
+      expect(error.message).toContain('Message is required');
     });
 
     it('should fail with empty message', async () => {
@@ -268,7 +262,7 @@ describe('MCP Server Test Suite Example', () => {
           a: 10,
           b: 0,
         });
-        expect(error).toContain('Division by zero');
+        expect(error.message).toContain('Division by zero');
       });
     });
 
@@ -279,7 +273,7 @@ describe('MCP Server Test Suite Example', () => {
           a: 10,
           b: 3,
         });
-        expect(error).toContain('Unknown operation');
+        expect(error.message).toContain('Unknown operation');
       });
     });
   });
@@ -307,7 +301,7 @@ describe('MCP Server Test Suite Example', () => {
   describe('Error Scenarios', () => {
     it('should handle calls to unknown tools', async () => {
       const error = await client.expectToolCallError('nonexistent-tool', {});
-      expect(error).toContain('Unknown tool');
+      expect(error.message).toContain('Unknown tool');
     });
   });
 });

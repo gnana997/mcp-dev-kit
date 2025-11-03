@@ -177,6 +177,7 @@ describe('MCPTestClient Integration Tests', () => {
     it('should succeed when tool throws error', async () => {
       const error = await client.expectToolCallError('unknown', {});
       expect(error).toBeInstanceOf(Error);
+      expect(error.message).toBeTruthy();
     });
 
     it('should throw AssertionError if tool succeeds', async () => {

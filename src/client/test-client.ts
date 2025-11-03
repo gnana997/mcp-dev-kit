@@ -295,16 +295,18 @@ export class MCPTestClient {
    * Test helper: Expect a tool call to fail
    * Throws if tool call succeeds
    */
-  async expectToolCallError(name: string, params?: unknown): Promise<string> {
+  async expectToolCallError(name: string, params?: unknown): Promise<Error> {
     try {
       const result = await this.callTool(name, params);
 
       if (result.isError) {
         // Extract error message from result content
+        let errorMessage = 'Tool returned error';
         if (result.content.length > 0 && result.content[0]?.type === 'text') {
-          return result.content[0]?.text ?? '';
+          errorMessage = result.content[0]?.text ?? errorMessage;
         }
-        return 'Tool returned error';
+        // Return an Error instance with the actual server error
+        return new Error(errorMessage);
       }
 
       throw new AssertionError(`Expected tool '${name}' to fail, but it succeeded`, {
@@ -317,8 +319,11 @@ export class MCPTestClient {
       if (error instanceof AssertionError) {
         throw error;
       }
-      // Success - tool threw error, return error message
-      return error instanceof Error ? error.message : String(error);
+      // Success - tool threw error, return the error itself
+      if (error instanceof Error) {
+        return error;
+      }
+      return new Error(String(error));
     }
   }
 

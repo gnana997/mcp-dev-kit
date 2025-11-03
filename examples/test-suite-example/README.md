@@ -8,7 +8,7 @@
 - 🎯 **MCPTestClient** - Simple, reliable MCP server testing
 - 📝 **Best Practices** - Patterns for comprehensive test suites
 - 🛠️ **Real Server Example** - Complete working MCP server with 3 tools
-- ✅ **40+ Tests** - Covering all server functionality
+- ✅ **30 Comprehensive Tests** - Covering all server functionality
 
 ## Quick Start
 
@@ -27,8 +27,9 @@ npm run test:watch
 
 - **test-server.js** - Example MCP server with 3 tools (echo, calculate, format)
 - **test-server.test.ts** - Comprehensive test suite showcasing all features
-- **package.json** - Dependencies and scripts
+- **vitest.setup.ts** - Matcher installation setup
 - **vitest.config.ts** - Vitest configuration
+- **package.json** - Dependencies and scripts
 
 ---
 
@@ -159,7 +160,7 @@ Demonstrates all custom matchers with clear examples.
 ## Example Test Output
 
 \`\`\`
-✓ MCP Server Test Suite Example (40 tests)
+✓ MCP Server Test Suite Example (30 tests)
   ✓ ✨ Custom Vitest Matchers (8 tests)
     ✓ toHaveTool matcher (2 tests)
     ✓ toReturnToolResult matcher (1 test)
@@ -173,7 +174,7 @@ Demonstrates all custom matchers with clear examples.
   ✓ Error Scenarios (1 test)
 
 Test Files  1 passed (1)
-     Tests  40 passed (40)
+     Tests  30 passed (30)
   Start at  12:00:00
   Duration  1.2s
 \`\`\`

@@ -275,7 +275,7 @@ expect(result).toBe('test');
 
 #### expectToolCallError()
 
-Test helper that asserts a tool call fails.
+Test helper that asserts a tool call fails and returns the error.
 
 ```typescript
 async expectToolCallError(
@@ -284,15 +284,16 @@ async expectToolCallError(
 ): Promise<Error>
 ```
 
-**Returns:** The error that was thrown
+**Returns:** An Error instance containing the actual server error message
 
 **Throws:** `AssertionError` if tool call succeeds
 
 **Example:**
 
 ```typescript
-const error = await client.expectToolCallError('invalid', {});
-expect(error.message).toContain('Unknown tool');
+const error = await client.expectToolCallError('calculate', { operation: 'divide', a: 10, b: 0 });
+expect(error).toBeInstanceOf(Error);
+expect(error.message).toContain('Division by zero'); // Actual server error message
 ```
 
 #### getServerInfo()
