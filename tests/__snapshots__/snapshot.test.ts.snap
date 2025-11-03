@@ -1,0 +1,263 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`MCP Snapshot Matchers > Auto-excluded fields > should exclude executionTime and cacheKey 1`] = `
+{
+  "result": "success",
+}
+`;
+
+exports[`MCP Snapshot Matchers > Auto-excluded fields > should exclude nested timestamps 1`] = `
+{
+  "value": "keep",
+}
+`;
+
+exports[`MCP Snapshot Matchers > Auto-excluded fields > should exclude requestId 1`] = `
+{
+  "value": "keep",
+}
+`;
+
+exports[`MCP Snapshot Matchers > Auto-excluded fields > should exclude serverInfo.startedAt 1`] = `
+{
+  "value": "keep",
+}
+`;
+
+exports[`MCP Snapshot Matchers > Auto-excluded fields > should exclude timestamp 1`] = `
+{
+  "value": "keep",
+}
+`;
+
+exports[`MCP Snapshot Matchers > Integration tests > should handle complex nested MCP responses 1`] = `{}`;
+
+exports[`MCP Snapshot Matchers > Integration tests > should snapshot complete server interaction 1`] = `
+{
+  "capabilities": {
+    "prompts": {},
+    "resources": {},
+    "tools": {},
+  },
+  "tools": [
+    {
+      "description": "Echoes back the message",
+      "name": "echo",
+    },
+    {
+      "description": "Adds two numbers",
+      "name": "add",
+    },
+  ],
+}
+`;
+
+exports[`MCP Snapshot Matchers > Integration tests > should snapshot multiple tool calls 1`] = `
+[
+  {
+    "content": [
+      {
+        "text": "first",
+        "type": "text",
+      },
+    ],
+  },
+  {
+    "content": [
+      {
+        "text": "second",
+        "type": "text",
+      },
+    ],
+  },
+  {
+    "content": [
+      {
+        "text": "3",
+        "type": "text",
+      },
+    ],
+  },
+]
+`;
+
+exports[`MCP Snapshot Matchers > toMatchMCPSnapshot > should create generic snapshot 1`] = `
+{
+  "foo": "bar",
+  "nested": {
+    "value": 123,
+  },
+}
+`;
+
+exports[`MCP Snapshot Matchers > toMatchMCPSnapshot > should exclude specified fields 1`] = `
+{
+  "keep": "this",
+}
+`;
+
+exports[`MCP Snapshot Matchers > toMatchMCPSnapshot > should handle arrays 1`] = `
+[
+  {
+    "id": 1,
+    "name": "first",
+  },
+  {
+    "id": 2,
+    "name": "second",
+  },
+]
+`;
+
+exports[`MCP Snapshot Matchers > toMatchMCPSnapshot > should handle nested objects 1`] = `
+{
+  "level1": {
+    "level2": {
+      "level3": {
+        "timestamp": "should-be-removed",
+        "value": "deep",
+      },
+    },
+  },
+}
+`;
+
+exports[`MCP Snapshot Matchers > toMatchToolListSnapshot > should create snapshot of tool array 1`] = `
+[
+  {
+    "description": "Echoes back the message",
+    "inputSchema": {
+      "properties": {
+        "message": {
+          "description": "Message to echo",
+          "type": "string",
+        },
+      },
+      "required": [
+        "message",
+      ],
+      "type": "object",
+    },
+    "name": "echo",
+  },
+  {
+    "description": "Adds two numbers",
+    "inputSchema": {
+      "properties": {
+        "a": {
+          "type": "number",
+        },
+        "b": {
+          "type": "number",
+        },
+      },
+      "required": [
+        "a",
+        "b",
+      ],
+      "type": "object",
+    },
+    "name": "add",
+  },
+]
+`;
+
+exports[`MCP Snapshot Matchers > toMatchToolListSnapshot > should create snapshot of tool list from client 1`] = `
+[
+  {
+    "description": "Echoes back the message",
+    "inputSchema": {
+      "properties": {
+        "message": {
+          "description": "Message to echo",
+          "type": "string",
+        },
+      },
+      "required": [
+        "message",
+      ],
+      "type": "object",
+    },
+    "name": "echo",
+  },
+  {
+    "description": "Adds two numbers",
+    "inputSchema": {
+      "properties": {
+        "a": {
+          "type": "number",
+        },
+        "b": {
+          "type": "number",
+        },
+      },
+      "required": [
+        "a",
+        "b",
+      ],
+      "type": "object",
+    },
+    "name": "add",
+  },
+]
+`;
+
+exports[`MCP Snapshot Matchers > toMatchToolListSnapshot > should exclude custom fields 1`] = `
+[
+  {
+    "inputSchema": {
+      "properties": {
+        "message": {
+          "description": "Message to echo",
+          "type": "string",
+        },
+      },
+      "required": [
+        "message",
+      ],
+      "type": "object",
+    },
+    "name": "echo",
+  },
+  {
+    "inputSchema": {
+      "properties": {
+        "a": {
+          "type": "number",
+        },
+        "b": {
+          "type": "number",
+        },
+      },
+      "required": [
+        "a",
+        "b",
+      ],
+      "type": "object",
+    },
+    "name": "add",
+  },
+]
+`;
+
+exports[`MCP Snapshot Matchers > toMatchToolResponseSnapshot > should create snapshot of tool call result 1`] = `
+{
+  "content": [
+    {
+      "text": "test snapshot",
+      "type": "text",
+    },
+  ],
+}
+`;
+
+exports[`MCP Snapshot Matchers > toMatchToolResponseSnapshot > should exclude execution time and cache key by default 1`] = `
+{
+  "content": [
+    {
+      "text": "8",
+      "type": "text",
+    },
+  ],
+}
+`;

@@ -5,6 +5,7 @@
 import { expect } from 'vitest';
 import type { MCPTestClient } from '../client/test-client.js';
 import type { Prompt, Resource, Tool, ToolCallResult } from '../client/types.js';
+import { mcpSnapshotMatchers } from './snapshot.js';
 import type { MCPMatchersInternal } from './types.js';
 
 /**
@@ -432,7 +433,11 @@ export const mcpMatchers: MCPMatchersInternal = {
  */
 export function installMCPMatchers(): void {
   expect.extend(mcpMatchers as any);
+  expect.extend(mcpSnapshotMatchers as any);
 }
 
+// Export snapshot matchers for standalone use
+export { mcpSnapshotMatchers } from './snapshot.js';
+
 // Export types
-export type { MCPMatchers } from './types.js';
+export type { MCPMatchers, MCPSnapshotOptions } from './types.js';

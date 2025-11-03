@@ -6,6 +6,26 @@ import type { MCPTestClient } from '../client/test-client.js';
 import type { Prompt, Resource, Tool, ToolCallResult } from '../client/types.js';
 
 /**
+ * Options for MCP snapshot testing
+ */
+export interface MCPSnapshotOptions {
+  /**
+   * Property paths to exclude from snapshot (e.g., ['timestamp', 'requestId'])
+   */
+  exclude?: string[];
+
+  /**
+   * Property paths to include in snapshot (all others excluded)
+   */
+  include?: string[];
+
+  /**
+   * Custom normalization functions for specific paths
+   */
+  normalize?: Record<string, (value: unknown) => unknown>;
+}
+
+/**
  * Custom matchers for MCP testing
  * Internal interface for the matcher implementations
  */
@@ -33,6 +53,18 @@ export interface MCPMatchersInternal {
     received: unknown,
     schema: Record<string, unknown>
   ): { pass: boolean; message: () => string };
+}
+
+/**
+ * Snapshot matchers for MCP testing
+ * Internal interface for the matcher implementations
+ */
+export interface MCPSnapshotMatchersInternal {
+  toMatchMCPSnapshot(received: unknown, options?: MCPSnapshotOptions): unknown;
+  toMatchToolListSnapshot(received: unknown, options?: MCPSnapshotOptions): Promise<unknown>;
+  toMatchToolResponseSnapshot(received: unknown, options?: MCPSnapshotOptions): unknown;
+  toMatchResourceListSnapshot(received: unknown, options?: MCPSnapshotOptions): Promise<unknown>;
+  toMatchPromptListSnapshot(received: unknown, options?: MCPSnapshotOptions): Promise<unknown>;
 }
 
 /**
@@ -98,6 +130,52 @@ export interface MCPMatchers<R = unknown> {
    * expect(tool).toMatchToolSchema({ type: 'object', required: ['message'] });
    */
   toMatchToolSchema(schema: Record<string, unknown>): R;
+
+  /**
+   * Snapshot test for any MCP response with smart defaults
+   * Automatically excludes common dynamic fields (timestamps, requestIds, etc.)
+   * @param options - Snapshot options (exclude, include, normalize)
+   * @example
+   * expect(response).toMatchMCPSnapshot();
+   * expect(response).toMatchMCPSnapshot({ exclude: ['customField'] });
+   */
+  toMatchMCPSnapshot(options?: MCPSnapshotOptions): R;
+
+  /**
+   * Snapshot test for tool list responses
+   * @param options - Snapshot options
+   * @example
+   * await expect(client).toMatchToolListSnapshot();
+   * expect(tools).toMatchToolListSnapshot();
+   */
+  toMatchToolListSnapshot(options?: MCPSnapshotOptions): R;
+
+  /**
+   * Snapshot test for tool execution responses
+   * @param options - Snapshot options
+   * @example
+   * expect(await client.callTool('echo', { message: 'test' }))
+   *   .toMatchToolResponseSnapshot();
+   */
+  toMatchToolResponseSnapshot(options?: MCPSnapshotOptions): R;
+
+  /**
+   * Snapshot test for resource list responses
+   * @param options - Snapshot options
+   * @example
+   * await expect(client).toMatchResourceListSnapshot();
+   * expect(resources).toMatchResourceListSnapshot();
+   */
+  toMatchResourceListSnapshot(options?: MCPSnapshotOptions): R;
+
+  /**
+   * Snapshot test for prompt list responses
+   * @param options - Snapshot options
+   * @example
+   * await expect(client).toMatchPromptListSnapshot();
+   * expect(prompts).toMatchPromptListSnapshot();
+   */
+  toMatchPromptListSnapshot(options?: MCPSnapshotOptions): R;
 }
 
 /**

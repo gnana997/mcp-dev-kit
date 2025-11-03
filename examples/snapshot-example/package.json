@@ -1,0 +1,23 @@
+{
+  "name": "mcp-snapshot-example",
+  "version": "1.0.0",
+  "description": "Real-world snapshot testing examples for MCP servers",
+  "type": "module",
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "bench": "vitest bench --run",
+    "bench:watch": "vitest bench",
+    "server": "tsx file-system-server.ts"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.20.2",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "mcp-dev-kit": "../../",
+    "tsx": "^4.7.0",
+    "typescript": "^5.7.0",
+    "vitest": "^4.0.6"
+  }
+}
