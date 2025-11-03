@@ -113,10 +113,7 @@ export type MatcherInput =
   | ToolCallResult;
 
 // Module augmentation for Vitest - extends expect() with custom matchers
-// biome-ignore lint/suspicious/noExplicitAny: Required for Vitest matcher extension
 declare module 'vitest' {
-  // biome-ignore lint/suspicious/noExplicitAny: Required for Vitest matcher extension
   interface Assertion extends MCPMatchers<any> {}
-  // biome-ignore lint/suspicious/noExplicitAny: Required for Vitest matcher extension
   interface AsymmetricMatchersContaining extends MCPMatchers<any> {}
 }

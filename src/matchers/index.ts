@@ -70,6 +70,62 @@ function isToolCallResult(value: unknown): value is ToolCallResult {
 }
 
 /**
+ * Helper: Resolve received value to ToolCallResult
+ */
+async function resolveToolCallResult(received: unknown): Promise<{
+  success: boolean;
+  result?: ToolCallResult;
+  error?: string;
+}> {
+  // Handle Promise<ToolCallResult>
+  if (received instanceof Promise) {
+    try {
+      return { success: true, result: await received };
+    } catch (error) {
+      return {
+        success: false,
+        error: `Expected tool call to return result, but it threw an error: ${error instanceof Error ? error.message : String(error)}`,
+      };
+    }
+  }
+
+  // Handle ToolCallResult directly
+  if (isToolCallResult(received)) {
+    return { success: true, result: received };
+  }
+
+  // Invalid input
+  return {
+    success: false,
+    error: `Expected Promise<ToolCallResult> or ToolCallResult, but received ${typeof received}. Use 'await expect(client.callTool(...)).toReturnToolResult(...)'`,
+  };
+}
+
+/**
+ * Helper: Extract actual value from ToolCallResult for comparison
+ */
+function extractActualValue(result: ToolCallResult): unknown {
+  // If single text content, try to parse it
+  if (result.content.length === 1 && result.content[0]?.type === 'text') {
+    const text = result.content[0]?.text ?? '';
+
+    // Try parsing as JSON if it looks like JSON
+    if (text.startsWith('{') || text.startsWith('[')) {
+      try {
+        return JSON.parse(text);
+      } catch {
+        return text;
+      }
+    }
+
+    return text;
+  }
+
+  // Return full result for other cases
+  return result;
+}
+
+/**
  * Custom matchers for MCP testing
  */
 export const mcpMatchers: MCPMatchersInternal = {
@@ -206,32 +262,16 @@ export const mcpMatchers: MCPMatchersInternal = {
    * Assert that a tool call returns a specific result
    */
   async toReturnToolResult(received: unknown, expected: unknown) {
-    let result: ToolCallResult;
-
-    // Handle Promise<ToolCallResult>
-    if (received instanceof Promise) {
-      try {
-        result = await received;
-      } catch (error) {
-        return {
-          pass: false,
-          message: () =>
-            `Expected tool call to return result, but it threw an error: ${error instanceof Error ? error.message : String(error)}`,
-        };
-      }
-    }
-    // Handle ToolCallResult directly
-    else if (isToolCallResult(received)) {
-      result = received;
-    }
-    // Invalid input
-    else {
+    // Resolve to ToolCallResult
+    const resolved = await resolveToolCallResult(received);
+    if (!resolved.success) {
       return {
         pass: false,
-        message: () =>
-          `Expected Promise<ToolCallResult> or ToolCallResult, but received ${typeof received}. Use 'await expect(client.callTool(...)).toReturnToolResult(...)'`,
+        message: () => resolved.error || 'Failed to resolve result',
       };
     }
+
+    const result = resolved.result!;
 
     // Check if result is an error
     if (result.isError) {
@@ -241,21 +281,8 @@ export const mcpMatchers: MCPMatchersInternal = {
       };
     }
 
-    // Extract text content for comparison
-    let actualValue: unknown = result;
-    if (result.content.length === 1 && result.content[0]?.type === 'text') {
-      const text = result.content[0]?.text ?? '';
-      // Try parsing as JSON
-      if (text.startsWith('{') || text.startsWith('[')) {
-        try {
-          actualValue = JSON.parse(text);
-        } catch {
-          actualValue = text;
-        }
-      } else {
-        actualValue = text;
-      }
-    }
+    // Extract actual value for comparison
+    const actualValue = extractActualValue(result);
 
     // Deep equality check
     const pass = JSON.stringify(actualValue) === JSON.stringify(expected);
@@ -404,7 +431,6 @@ export const mcpMatchers: MCPMatchersInternal = {
  * ```
  */
 export function installMCPMatchers(): void {
-  // biome-ignore lint/suspicious/noExplicitAny: Vitest expect.extend requires any type
   expect.extend(mcpMatchers as any);
 }
 
