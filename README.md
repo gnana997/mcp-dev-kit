@@ -18,13 +18,13 @@ The biggest pain point when developing MCP servers:
 
 ## Features
 
-✨ **Auto-patching** - Just import and console.log works
-🎨 **Colored output** - Color-coded log levels (auto-detects TTY)
-⏱️ **Timestamps** - ISO8601 timestamps on all logs
-📝 **Object formatting** - Pretty-print objects with `util.inspect()`
-📁 **File logging** - Optional async file output
-🧹 **Cleanup** - Graceful restoration of original console
-⚡ **Zero overhead** - Lightweight, uses picocolors (7 KB)
+- ✨ **Auto-patching** - Just import and console.log works
+- 🎨 **Colored output** - Color-coded log levels (auto-detects TTY)
+- ⏱️ **Timestamps** - ISO8601 timestamps on all logs
+- 📝 **Object formatting** - Pretty-print objects with `util.inspect()`
+- 📁 **File logging** - Optional async file output
+- 🧹 **Cleanup** - Graceful restoration of original console
+- ⚡ **Zero overhead** - Lightweight, uses picocolors (7 KB)
 
 ## Quick Start
 
