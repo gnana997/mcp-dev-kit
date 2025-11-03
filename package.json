@@ -42,10 +42,10 @@
       "import": "./dist/client/index.js",
       "require": "./dist/client/index.cjs"
     },
-    "./helpers": {
-      "types": "./dist/helpers/index.d.ts",
-      "import": "./dist/helpers/index.js",
-      "require": "./dist/helpers/index.cjs"
+    "./matchers": {
+      "types": "./dist/matchers/index.d.ts",
+      "import": "./dist/matchers/index.js",
+      "require": "./dist/matchers/index.cjs"
     }
   },
   "files": ["dist", "README.md", "LICENSE", "CHANGELOG.md"],

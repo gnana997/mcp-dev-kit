@@ -122,8 +122,7 @@ export class InitializationError extends MCPTestError {
  */
 export class ToolNotFoundError extends MCPTestError {
   constructor(toolName: string, availableTools: string[] = [], context: ErrorContext = {}) {
-    const availableToolsList =
-      availableTools.length > 0 ? availableTools.join(', ') : 'none';
+    const availableToolsList = availableTools.length > 0 ? availableTools.join(', ') : 'none';
     const contextWithSuggestion: ErrorContext = {
       ...context,
       toolName,

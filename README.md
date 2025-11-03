@@ -205,6 +205,85 @@ logger.info('This goes to both stderr and server.log');
 await logger.close();
 ```
 
+## Testing MCP Servers
+
+### MCPTestClient
+
+`mcp-dev-kit` includes a powerful test client for writing tests for your MCP servers:
+
+```typescript
+import { MCPTestClient } from 'mcp-dev-kit/client';
+import { describe, it, expect } from 'vitest';
+
+describe('My MCP Server', () => {
+  const client = new MCPTestClient({
+    command: 'node',
+    args: ['./my-server.js'],
+  });
+
+  beforeAll(async () => {
+    await client.connect();
+  });
+
+  afterAll(async () => {
+    await client.disconnect();
+  });
+
+  it('should list available tools', async () => {
+    const tools = await client.listTools();
+    expect(tools).toHaveLength(2);
+    expect(tools.map(t => t.name)).toEqual(['echo', 'calculate']);
+  });
+
+  it('should call tools successfully', async () => {
+    const result = await client.callTool('echo', { message: 'hello' });
+    expect(result.content[0]?.text).toBe('hello');
+  });
+});
+```
+
+### Custom Vitest Matchers
+
+Make your tests more readable with MCP-specific matchers:
+
+```typescript
+import { installMCPMatchers } from 'mcp-dev-kit/matchers';
+import { expect } from 'vitest';
+
+// Install matchers once (e.g., in vitest.setup.ts)
+installMCPMatchers();
+
+describe('My MCP Server', () => {
+  // Check if server has specific tools
+  await expect(client).toHaveTool('echo');
+  await expect(client).toHaveResource('config://app.json');
+  await expect(client).toHavePrompt('greeting');
+
+  // Test tool results
+  await expect(client.callTool('echo', { message: 'test' }))
+    .toReturnToolResult('test');
+
+  // Expect errors
+  await expect(client.callTool('unknown', {}))
+    .toThrowToolError();
+
+  // Check tool properties
+  const tools = await client.listTools();
+  const echoTool = tools[0];
+  expect(echoTool).toHaveToolProperty('description', 'Echoes back the message');
+  expect(echoTool).toMatchToolSchema({ type: 'object', required: ['message'] });
+});
+```
+
+**Available Matchers:**
+- `toHaveTool(name)` - Assert server has a tool
+- `toHaveResource(uri)` - Assert server has a resource
+- `toHavePrompt(name)` - Assert server has a prompt
+- `toReturnToolResult(expected)` - Assert tool returns specific result
+- `toThrowToolError()` - Assert tool call throws error
+- `toHaveToolProperty(property, value?)` - Assert tool has property
+- `toMatchToolSchema(schema)` - Assert tool input schema matches
+
 ## Examples
 
 See [examples/](./examples/) directory for complete examples:

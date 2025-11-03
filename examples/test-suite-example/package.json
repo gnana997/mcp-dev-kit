@@ -1,0 +1,18 @@
+{
+  "name": "test-suite-example",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Complete example demonstrating mcp-dev-kit testing features with custom Vitest matchers",
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^0.6.0"
+  },
+  "devDependencies": {
+    "mcp-dev-kit": "file:../..",
+    "vitest": "^2.1.8"
+  }
+}

@@ -5,7 +5,6 @@
 
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js';
-import { getCoverageEnv } from '../helpers/coverage.js';
 import {
   AssertionError,
   ConnectionError,
@@ -36,7 +35,6 @@ const DEFAULT_CONFIG = {
     version: '0.1.0',
   },
   capabilities: {},
-  enableCoverage: true,
 };
 
 /**
@@ -71,11 +69,6 @@ export class MCPTestClient {
       ...config,
       clientInfo: { ...DEFAULT_CONFIG.clientInfo, ...config.clientInfo },
       capabilities: { ...DEFAULT_CONFIG.capabilities, ...config.capabilities },
-      // Merge coverage env if enabled (default: true)
-      env: {
-        ...(config.enableCoverage !== false ? getCoverageEnv() : {}),
-        ...config.env, // User's env overrides coverage env
-      },
     };
   }
 
@@ -160,7 +153,14 @@ export class MCPTestClient {
 
       // Check if tool returned error
       if (result.isError) {
-        throw new ToolCallError(name, 'Tool returned an error', {
+        // Extract actual error message from server
+        let errorMessage = 'Tool returned an error';
+        const content = result.content as Array<{ type: string; text?: string }>;
+        if (content.length > 0 && content[0]?.type === 'text') {
+          errorMessage = content[0]?.text ?? errorMessage;
+        }
+
+        throw new ToolCallError(name, errorMessage, {
           result,
         });
       }
@@ -295,13 +295,16 @@ export class MCPTestClient {
    * Test helper: Expect a tool call to fail
    * Throws if tool call succeeds
    */
-  async expectToolCallError(name: string, params?: unknown): Promise<Error> {
+  async expectToolCallError(name: string, params?: unknown): Promise<string> {
     try {
       const result = await this.callTool(name, params);
 
       if (result.isError) {
-        // Success - tool returned error
-        return new Error('Tool returned error as expected');
+        // Extract error message from result content
+        if (result.content.length > 0 && result.content[0]?.type === 'text') {
+          return result.content[0]?.text ?? '';
+        }
+        return 'Tool returned error';
       }
 
       throw new AssertionError(`Expected tool '${name}' to fail, but it succeeded`, {
@@ -314,8 +317,8 @@ export class MCPTestClient {
       if (error instanceof AssertionError) {
         throw error;
       }
-      // Success - tool threw error
-      return error as Error;
+      // Success - tool threw error, return error message
+      return error instanceof Error ? error.message : String(error);
     }
   }
 

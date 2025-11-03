@@ -43,15 +43,6 @@ export interface MCPTestClientConfig {
    * Environment variables for the server process
    */
   env?: Record<string, string>;
-
-  /**
-   * Enable automatic coverage propagation to child process (default: true)
-   *
-   * When enabled, NODE_V8_COVERAGE environment variable is automatically
-   * propagated to the MCP server child process, enabling full coverage
-   * collection with Vitest/Jest.
-   */
-  enableCoverage?: boolean;
 }
 
 /**

@@ -46,6 +46,3 @@ export {
   validateWith,
   safeValidate,
 } from './schemas.js';
-
-// Helpers
-export { shouldEnableCoverage, getCoverageEnv } from '../helpers/index.js';

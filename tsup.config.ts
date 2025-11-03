@@ -5,7 +5,7 @@ export default defineConfig({
     index: 'src/index.ts',
     'logger/index': 'src/logger/index.ts',
     'client/index': 'src/client/index.ts',
-    'helpers/index': 'src/helpers/index.ts',
+    'matchers/index': 'src/matchers/index.ts',
   },
   format: ['esm', 'cjs'],
   dts: true,
