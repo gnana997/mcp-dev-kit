@@ -15,7 +15,7 @@
     "zod": "^3.25.76"
   },
   "devDependencies": {
-    "mcp-dev-kit": "../../",
+    "mcp-dev-kit": "^0.2.0",
     "tsx": "^4.7.0",
     "typescript": "^5.7.0",
     "vitest": "^4.0.6"
